@@ -2,7 +2,8 @@
   <div id="app" :class="typeof weather.main != 'undefined' && weather.main.temp > 16 ? 'temp' : ''">
     <main>
       <SearchBox />
-      <div class="weather-wrap" v-if="weather.main">
+      <Loading v-if="isLoading" />
+      <div class="weather-wrap" v-if="weather.main && !isLoading">
         <LocationBox />
         <WeatherBox />
       </div>
@@ -14,15 +15,16 @@
 import SearchBox from "./components/SearchBox";
 import LocationBox from "./components/LocationBox";
 import WeatherBox from "./components/WeatherBox";
+import Loading from "./components/Loading";
 import { mapState } from "vuex";
 
 export default {
   name: "app",
-  components: { SearchBox, LocationBox, WeatherBox },
+  components: { SearchBox, LocationBox, WeatherBox, Loading },
   data() {
     return {};
   },
-  computed: mapState(["weather"]),
+  computed: mapState(["weather", "isLoading"]),
 };
 </script>
 
