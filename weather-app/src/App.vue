@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="typeof weather.main != 'undefined' && weather.main.temp > 16 ? 'temp' : ''">
+  <div id="app" :style="`--bkgImage: url(${backgroundImg});`">
     <main>
       <SearchBox />
       <Loading v-if="isLoading" />
@@ -24,7 +24,24 @@ export default {
   data() {
     return {};
   },
-  computed: mapState(["weather", "isLoading"]),
+  computed: {
+    ...mapState(["weather", "isLoading"]),
+    backgroundImg() {
+      var backgroundStr = "cold-600.jpeg";
+      if (this.weather.main) {
+        const weatherId = this.weather.weather[0].id;
+        console.log(weatherId);
+        if (200 <= weatherId && weatherId <= 299) backgroundStr = "thunder-200.jpg";
+        else if (300 <= weatherId && weatherId <= 399) backgroundStr = "drizzle-300.jpg";
+        else if (400 <= weatherId && weatherId <= 599) backgroundStr = "rain-500.jpg";
+        else if (600 <= weatherId && weatherId <= 699) backgroundStr = "cold-600.jpeg";
+        else if (700 <= weatherId && weatherId <= 799) backgroundStr = "mist-700.jpg";
+        else if (weatherId == 800) backgroundStr = "hot-800.jpeg";
+        else if (801 <= weatherId && weatherId <= 899) backgroundStr = "clouds-800.jpg";
+      }
+      return require(`./assets/${backgroundStr}`);
+    },
+  },
 };
 </script>
 
@@ -39,14 +56,10 @@ body {
 }
 
 #app {
-  background-image: url("./assets/cold-emoji.jpeg");
+  background-image: var(--bkgImage);
   background-size: cover;
   background-position: bottom;
   transition: 0.4s;
-}
-
-#app.temp {
-  background-image: url("./assets/hot-emoji.jpeg");
 }
 
 main {
