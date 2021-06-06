@@ -1,7 +1,12 @@
 <template>
   <div class="weather-box">
-    <div class="temperature">{{ Math.round(weather.main.temp * 10) / 10 }}°C</div>
-    <div class="weather">{{ capitalizeFirstLetter(weather.weather[0].description) }}</div>
+    <div class="temperature">
+      <div class="weather-icon">
+        <img :src="icon" />
+      </div>
+      <div>{{ actualTemp }}°C</div>
+      <div class="weather">{{ tempDetail }}</div>
+    </div>
   </div>
 </template>
 
@@ -18,11 +23,27 @@ export default {
         .replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()));
     },
   },
-  computed: mapState(["weather"]),
+  computed: {
+    ...mapState(["weather"]),
+    tempDetail() {
+      return this.capitalizeFirstLetter(this.weather.weather[0].description);
+    },
+    actualTemp() {
+      return Math.round(this.weather.main.temp);
+    },
+    icon() {
+      var iconId = this.weather.weather[0].icon;
+      return require(`../assets/icons/${iconId}.png`);
+    },
+  },
 };
 </script>
 
 <style>
+.weather-icon {
+  margin-bottom: 0;
+}
+
 .weather-box {
   text-align: center;
 }
