@@ -1,11 +1,19 @@
 <template>
-  <div id="app" :class="typeof weather.main != 'undefined' && weather.main.temp > 16 ? 'temp' : ''">
+  <div
+    id="app"
+    :class="
+      typeof weather.main != 'undefined' && weather.main.temp > 16 ? 'temp' : ''
+    "
+  >
     <main>
       <SearchBox />
       <Loading v-if="isLoading" />
       <div class="weather-wrap" v-if="weather.main && !isLoading">
         <LocationBox />
         <WeatherBox />
+      </div>
+      <div class="map-wrap" v-if="map_opts.lat && map_opts.lon && !isLoading">
+        <MapBox />
       </div>
     </main>
   </div>
@@ -16,15 +24,16 @@ import SearchBox from "./components/SearchBox";
 import LocationBox from "./components/LocationBox";
 import WeatherBox from "./components/WeatherBox";
 import Loading from "./components/Loading";
+import MapBox from "./components/MapBox";
 import { mapState } from "vuex";
 
 export default {
   name: "app",
-  components: { SearchBox, LocationBox, WeatherBox, Loading },
+  components: { SearchBox, LocationBox, WeatherBox, MapBox, Loading },
   data() {
     return {};
   },
-  computed: mapState(["weather", "isLoading"]),
+  computed: mapState(["weather", "isLoading", "map_opts"]),
 };
 </script>
 
@@ -53,6 +62,10 @@ main {
   min-height: 100vh;
   padding: 25px;
 
-  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.75));
+  background-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.25),
+    rgba(0, 0, 0, 0.75)
+  );
 }
 </style>

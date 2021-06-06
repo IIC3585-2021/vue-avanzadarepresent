@@ -10,16 +10,23 @@ const store = new Vuex.Store({
     isLoading: false,
     api_key: process.env.VUE_API_KEY ? process.env.VUE_API_KEY : process.env.VUE_APP_API_KEY,
     url_base: "https://api.openweathermap.org/data/2.5/",
+    coord: {},
+    map_opts: {}
   },
   mutations: {
-    changeLoading (state, value) {
+    changeLoading(state, value) {
       state.isLoading = value;
     },
-    setWeather (state, data) {
+    setWeather(state, data) {
       state.weather = data;
     },
-    setForecast (state, data) {
+    setForecast(state, data) {
       state.forecast = data;
+    },
+    setCoordinates(state, data) {
+      state.map_opts.lat = data.coord.lat;
+      state.map_opts.lon = data.coord.lon;
+      state.map_opts.zoom = 10;
     }
   },
   actions: {
@@ -31,10 +38,11 @@ const store = new Vuex.Store({
         })
         .then((data) => {
           commit('setWeather', data)
+          commit('setCoordinates', data)
           dispatch('fetchForecast', data.coord);
         });
     },
-    fetchForecast({ commit, state }, {lat, lon}) {
+    fetchForecast({ commit, state }, { lat, lon }) {
       fetch(`${state.url_base}onecall?lat=${lat}&lon=${lon}&units=metric&appid=${state.api_key}`)
         .then((response) => {
           return response.json();
