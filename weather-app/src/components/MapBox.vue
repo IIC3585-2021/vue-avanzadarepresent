@@ -3,7 +3,12 @@
 </template>
 
 <script>
-import L from "leaflet";
+import Map from "ol/Map";
+import View from "ol/View";
+import TileLayer from "ol/layer/Tile";
+import XYZ from "ol/source/XYZ";
+import OSM from "ol/source/OSM";
+import { fromLonLat } from "ol/proj";
 import { mapState } from "vuex";
 
 export default {
@@ -20,28 +25,32 @@ export default {
   computed: mapState(["map_opts", "api_key"]),
   methods: {
     renderMap() {
-      console.log(`RENDER THE MAP at ${this.map_opts.lat} KRONK`);
-
-      this.map = L.map("map-box", {
-        center: [this.map_opts.lat, this.map_opts.lon],
-        zoom: this.map_opts.zoom,
+      this.map = new Map({
+        target: "map-box",
+        layers: [
+          new TileLayer({
+            source: new OSM(),
+          }),
+        ],
+        view: new View({
+          center: fromLonLat([this.map_opts.lon, this.map_opts.lat]),
+          zoom: this.map_opts.zoom,
+        }),
       });
 
-      this.tileLayer = L.tileLayer(
-        "https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png",
-        {
-          maxZoom: 18,
-          attribution:
-            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
-        }
-      );
+      var tempLayer = new TileLayer({
+        source: new XYZ({
+          url: `https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${this.api_key}`,
+        }),
+      });
 
-      this.weatherLayer = L.tileLayer(
-        `https://tile.openweathermap.org/map/temp_new/${this.map_opts.zoom}/33/50.png?appid=${this.api_key}`
-      );
-
-      this.tileLayer.addTo(this.map);
-      this.weatherLayer.addTo(this.map);
+      var precipitationLayer = new TileLayer({
+        source: new XYZ({
+          url: `https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${this.api_key}`,
+        }),
+      });
+      this.map.addLayer(precipitationLayer);
+      this.map.addLayer(tempLayer);
     },
   },
   mounted() {
@@ -55,5 +64,9 @@ export default {
 <style>
 .map {
   height: 600px;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: auto;
 }
 </style>

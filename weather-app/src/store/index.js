@@ -26,7 +26,7 @@ const store = new Vuex.Store({
     setCoordinates(state, data) {
       state.map_opts.lat = data.coord.lat;
       state.map_opts.lon = data.coord.lon;
-      state.map_opts.zoom = 10;
+      state.map_opts.zoom = 7;
     }
   },
   actions: {
