@@ -7,6 +7,16 @@ const store = new Vuex.Store({
   state: {
     weather: {},
     forecast: {},
+    todayIndex: (new Date()).getDay(),
+    daysOfWeek: {
+      0: "Domingo",
+      1: "Lunes",
+      2: "Martes",
+      3: "Miércoles",
+      4: "Jueves",
+      5: "Viernes",
+      6: "Sábado"
+    },
     isLoading: false,
     api_key: process.env.VUE_API_KEY ? process.env.VUE_API_KEY : process.env.VUE_APP_API_KEY,
     url_base: "https://api.openweathermap.org/data/2.5/",

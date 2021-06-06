@@ -7,6 +7,9 @@
         <LocationBox />
         <WeatherBox />
       </div>
+      <div class="forecast-wrap" v-if="weather.main && !isLoading">
+        <ForecastUnit :dayOfWeek="day + 1" v-for="day in Array(5).keys()" :key="day" />
+      </div>
     </main>
   </div>
 </template>
@@ -15,12 +18,13 @@
 import SearchBox from "./components/SearchBox";
 import LocationBox from "./components/LocationBox";
 import WeatherBox from "./components/WeatherBox";
+import ForecastUnit from "./components/ForecastUnit";
 import Loading from "./components/Loading";
 import { mapState } from "vuex";
 
 export default {
   name: "app",
-  components: { SearchBox, LocationBox, WeatherBox, Loading },
+  components: { SearchBox, LocationBox, WeatherBox, Loading, ForecastUnit },
   data() {
     return {};
   },
@@ -60,6 +64,12 @@ body {
   background-size: cover;
   background-position: bottom;
   transition: 0.4s;
+}
+
+.forecast-wrap {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-evenly;
 }
 
 main {
