@@ -25,7 +25,7 @@ const store = new Vuex.Store({
   actions: {
     fetchWeather({ dispatch, commit, state }, query) {
       commit('changeLoading', true);
-      fetch(`${state.url_base}weather?q=${query}&units=metric&APPID=${state.api_key}`)
+      fetch(`${state.url_base}weather?q=${query}&units=metric&lang=es&APPID=${state.api_key}`)
         .then((response) => {
           return response.json();
         })
@@ -35,7 +35,7 @@ const store = new Vuex.Store({
         });
     },
     fetchForecast({ commit, state }, {lat, lon}) {
-      fetch(`${state.url_base}onecall?lat=${lat}&lon=${lon}&units=metric&appid=${state.api_key}`)
+      fetch(`${state.url_base}onecall?lat=${lat}&lon=${lon}&units=metric&lang=es&appid=${state.api_key}`)
         .then((response) => {
           return response.json();
         })
