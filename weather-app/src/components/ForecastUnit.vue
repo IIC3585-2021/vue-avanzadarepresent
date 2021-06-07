@@ -1,11 +1,12 @@
 <template>
-  <div class="weather-box">
+  <div class="forecast-box">
     <div class="temperature">
-      <div class="weather-icon">
+      <div>{{ this.daysOfWeek[this.forecastDay] }}</div>
+      <div class="forecast-icon">
         <img :src="icon" />
       </div>
       <div>{{ actualTemp }}°C</div>
-      <div class="weather">{{ tempDetail }}</div>
+      <div class="forecast">{{ tempDetail }}</div>
     </div>
   </div>
 </template>
@@ -14,7 +15,8 @@
 import { mapState } from "vuex";
 
 export default {
-  name: "WeatherBox",
+  name: "ForecastBox",
+  props: ["dayOfWeek"],
   methods: {
     capitalizeFirstLetter(string) {
       return string
@@ -24,15 +26,20 @@ export default {
     },
   },
   computed: {
-    ...mapState(["weather"]),
+    ...mapState(["weather", "forecast", "daysOfWeek", "todayIndex"]),
+    forecastDay() {
+      return (this.todayIndex + this.dayOfWeek) % 7;
+    },
     tempDetail() {
-      return this.capitalizeFirstLetter(this.weather.weather[0].description);
+      console.log();
+      return this.capitalizeFirstLetter(this.forecast.daily[this.dayOfWeek].weather[0].description);
     },
     actualTemp() {
-      return Math.round(this.weather.main.temp);
+      console.log(this.forecast.daily[this.dayOfWeek].temp.day);
+      return Math.round(this.forecast.daily[this.dayOfWeek].temp.day);
     },
     icon() {
-      var iconId = this.weather.weather[0].icon;
+      var iconId = this.forecast.daily[this.dayOfWeek].weather[0].icon;
       return require(`../assets/icons/${iconId}.png`);
     },
   },
@@ -40,22 +47,24 @@ export default {
 </script>
 
 <style>
-.weather-icon {
+.forecast-icon {
   margin-bottom: 0;
 }
 
-.weather-box {
+.forecast-box {
   text-align: center;
 }
 
-.weather-box .temperature {
+.forecast-box .temperature {
   display: inline-block;
+  height: 10em;
+  width: 7em;
   padding: 25px 25px;
   color: #fff;
-  font-size: 100px;
-  font-weight: 900;
+  font-size: 35px;
+  font-weight: 600;
 
-  text-shadow: 3px 6px rgba(0, 0, 0, 0.25);
+  text-shadow: 1px 2px rgba(0, 0, 0, 0.25);
 
   background-color: rgba(255, 255, 255, 0.25);
   border-radius: 15px;
@@ -65,9 +74,9 @@ export default {
   box-shadow: 3px 6px rgba(0, 0, 0, 0.25);
 }
 
-.weather-box .weather {
+.forecast-box .forecast {
   color: white;
-  font-size: 50px;
+  font-size: 30px;
   font-weight: 500;
   font-style: italic;
   text-shadow: 3px 6px rgba(0, 0, 0, 0.25);
